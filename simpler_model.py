@@ -27,8 +27,9 @@ dt = 1e-2
 # initial conditions
 volume_0 = 8.63e-14 # m^3
 turgor_0 = 0.5 # MPa
-i_0 = [volume_0, turgor_0] # vector of initial values for volume and turgor
+y0 = np.array([volume_0, turgor_0]) # vector of initial values for volume and turgor
 time = np.arange(0, 200, dt) # time vector
+
 
 # Script parameters
 # name of the run
@@ -44,20 +45,27 @@ def osmotic(temperature, gas_constant, volume, solutes_quantity):
 def f(y, t):
     volume = y[0]
     turgor = y[1]
-    f0 = [area * permeability * water_potential * (osmotic(temperature, gas_constant, volume, solutes_quantity) \
-            - turgor)]
-    f1 = [(yield_turgor/yield_strain * volume)* (area * permeability * water_potential * \
+    f0 = area * permeability * (water_potential + (osmotic(temperature, gas_constant, volume, solutes_quantity) \
+            - turgor))
+    f1 = (yield_turgor/yield_strain * volume)* (area * permeability * water_potential * \
             (osmotic(temperature, gas_constant, volume, solutes_quantity) \
-            - turgor)) - wall_extensibility * elastic_modulus * (max(0, turgor -  yield_turgor))]
-    return np.array([f0, f1])
+            - turgor)) - wall_extensibility * elastic_modulus * (max(0, turgor -  yield_turgor))
+    d = np.array([f0, f1])
+    return d
 
-# or try data = np.array([dvdt, dTdt])
-# and then return data
+
+
 
 
 # Resolution of the differential system
-solflux = odeint(f, i_0, time)
+solflux = odeint(f, y0, time)
+
+
 
 # f0 and f1 are vectors that contain the solution values for each time step; transpose these vectors to plot them
-#f0 = y.T[0]
-#f1 = y.T[1]
+f0 = y.T[0]
+f1 = y.T[1]
+
+time.shape =(1, time.size)
+vec = np.concatenate((time, y.T)).T
+np.savetxt('datos.dat', vec)
