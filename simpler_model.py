@@ -55,17 +55,13 @@ def f(y, t):
 
 
 
-
-
-# Resolution of the differential system
-solflux = odeint(f, y0, time)
-
-
-
-# f0 and f1 are vectors that contain the solution values for each time step; transpose these vectors to plot them
-f0 = y.T[0]
-f1 = y.T[1]
-
-time.shape =(1, time.size)
-vec = np.concatenate((time, y.T)).T
-np.savetxt('datos.dat', vec)
+if __name__ == '__main__':
+    # Resolution of the differential system
+    solflux = odeint(f, y0, time)
+    # f0 and f1 are vectors that contain the solution values for each time step; transpose these vectors to plot them
+    # f0 = y.T[0]
+    # f1 = y.T[1]
+    time.shape =(1, time.size)
+    #vec = np.concatenate((time, y.T)).T
+    vec = pd.DataFrame( np.concatenate((sm.time, solflux.T)).T, columns=['tiempo','y0','y1'])
+    vec.to_csv('datos.dat')
