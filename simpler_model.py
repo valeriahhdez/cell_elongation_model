@@ -23,7 +23,7 @@ wall_extensibility = 6e-3 # MPa s⁻1
 elastic_modulus = 6 # MPa
 gas_constant = 8.314e-6 # gas constant in J mol-1 K-1
 temperature =  293 # in K
-water_potential = - 0.8 # MPa
+water_potential = 0.8 # MPa
 dt = 1e-2
 
 # initial conditions
